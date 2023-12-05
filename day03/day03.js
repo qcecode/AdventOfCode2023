@@ -17,11 +17,8 @@ function containsNonNumericNonDotCharacter(str) {
 
 
 function parseNumberFromString(str, start, end) {
-    // Extrahiere den Teilstring, der die Zahl enthält
     const numberPart = str.substring(start, end + 1);
 
-    // Parse den extrahierten Teilstring als Zahl
-    // Verwenden Sie parseInt() für Ganzzahlen oder parseFloat() für Fließkommazahlen
     return parseInt(numberPart); // oder parseFloat(numberPart);
 }
 
