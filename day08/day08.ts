@@ -9,7 +9,7 @@ type ParsedResult = {
 function parseFileContent(filePath: string): ParsedResult {
     const fileContent = fs.readFileSync(filePath, {encoding: 'utf8'});
     const parts = fileContent.split('\n');
-    const instructions = parts.shift()?.trim() || ''; // Extrahiere den Header (z.B. 'RL')
+    const instructions = parts.shift()?.trim() || ''; // Extrahiere den Header
     const parsedData: ParsedData = {};
 
     parts.forEach(line => {
@@ -25,16 +25,17 @@ function parseFileContent(filePath: string): ParsedResult {
     return {instructions: instructions, data: parsedData};
 }
 
-
 function part1(statingPos: string, input: ParsedResult) {
     let currentPos = statingPos;
     let idx = 0;
 
     while (currentPos[2] != 'Z') {
-        //Left
+        // Left
         if (input.instructions.charAt(idx % input.instructions.length) === 'L') {
             currentPos = input.data[currentPos][0];
-        } else {
+        }
+        // Right
+        else {
             currentPos = input.data[currentPos][1];
         }
         idx++
@@ -54,12 +55,10 @@ function findStartingPos(data: ParsedData): string[] {
     return ans;
 }
 
+// Funktion zur Berechnung des kleinsten gemeinsamen Vielfachen (LCM)
 // Funktion zur Berechnung des größten gemeinsamen Teilers (GCD)
 const gcd = (a: number, b: number): number => a ? gcd(b % a, a) : b;
-
-// Funktion zur Berechnung des kleinsten gemeinsamen Vielfachen (LCM)
 const lcm = (a: number, b: number): number => a * b / gcd(a, b);
-
 
 function part2new(input: ParsedResult) {
     let positions = findStartingPos(input.data)
