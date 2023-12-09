@@ -55,9 +55,11 @@ function getHand(hand: string): string {
     if (hand.indexOf("J") !== -1) {
         let mostFrequent: string = hand.replaceAll("J", "")
             .split("")
-            .reduce((acc: [string, number], card: string) =>
-                hand.replaceAll("J", "")
-                    .split(card).length - 1 > acc[1] ? [card, hand.replaceAll("J", "").split(card).length - 1] : acc, ["", 0])[0];
+            .reduce((acc: [string, number], card: string): [string, number] => {
+                const filteredHand = hand.replaceAll("J", "");
+                const count = filteredHand.split(card).length - 1;
+                return count > acc[1] ? [card, count] : acc;
+            }, ["", 0])[0];
         hand = hand.replaceAll("J", mostFrequent || "K");
     }
 
@@ -66,23 +68,24 @@ function getHand(hand: string): string {
     if (set.size === 1) return "five;" + hand;
     if (set.size === 2) {
         const [a, b] = Array.from(set);
-        if ((hand.indexOf(a) === hand.lastIndexOf(a)) || (hand.indexOf(b) === hand.lastIndexOf(b))) return "four;" + hand;
+        if ((hand.match(new RegExp(a, "g")) || []).length === 1 || (hand.match(new RegExp(b, "g")) || []).length === 1) {
+            return "four;" + hand;
+        }
         return "fullHouse;" + hand;
     }
     if (set.size === 3) {
         const [a, b, c] = Array.from(set);
-        let amtA = 0, amtB = 0, amtC = 0;
-        for (let i = 0; i < hand.length; i++) {
-            if (hand[i] === a) amtA++;
-            if (hand[i] === b) amtB++;
-            if (hand[i] === c) amtC++;
-        }
+        const amtA = (hand.match(new RegExp(a, "g")) || []).length;
+        const amtB = (hand.match(new RegExp(b, "g")) || []).length;
+        const amtC = (hand.match(new RegExp(c, "g")) || []).length;
+
         if (amtA === 3 || amtB === 3 || amtC === 3) return "three;" + hand;
         return "twoPair;" + hand;
     }
     if (set.size === 4) return "pair;" + hand;
     return "high;" + hand;
 }
+
 
 console.log(input.sort((a: string, b: string) => {
     const [hand1, bid1] = a.split(" ");
@@ -100,4 +103,3 @@ console.log(input.sort((a: string, b: string) => {
 
     return parseInt(bid1) > parseInt(bid2) ? -1 : parseInt(bid1) < parseInt(bid2) ? 1 : 0;
 }).reduce((acc: number, hand: string, i: number) => acc += parseInt(hand.split(" ")[1]) * (input.length - i), 0));
-
