@@ -46,5 +46,5 @@ function processInstructions(instructions: string[]): number {
 const fileContent = fs.readFileSync('./input.txt', 'utf-8');
 const inputList = fileContent.split(',');
 
-console.log("Part1 : " + calculateSumOfHashes(inputList));
+console.log("Part1: " + calculateSumOfHashes(inputList));
 console.log("Part2: " + processInstructions(inputList));
